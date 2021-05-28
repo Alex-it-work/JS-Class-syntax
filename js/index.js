@@ -15,8 +15,7 @@ class MyArray {
   }
   push() {
     for (let i = 0; i < arguments.length; i++) {
-      this[this.length] = arguments[i];
-      ++this.length;
+      this[this.length++] = arguments[i];
     }
     return this.length;
   }
@@ -92,34 +91,38 @@ class RangeValidator {
     this.to = to;
   }
 
-  get targetFromTo() {
-    return `${this.from} - ${this.to}`;
+  get fromTo() {
+    return `${this._from} - ${this._to}`;
   }
 
   get range() {
-    return [this.from, this.to];
+    return [this._from, this._to];
   }
 
-  get getValueFrom() {
-    return this.from;
+  get from() {
+    return this._from;
   }
 
-  get getValueTo() {
-    return this.to;
+  get to() {
+    return this._to;
   }
 
-  set setFrom(value) {
+  set from(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) {
       throw new TypeError('"From" - must be an integer number');
     }
-    this.from = value;
+    this._from = value;
   }
 
-  set setTo(value) {
+  set to(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) {
       throw new TypeError('"To" - must be an integer number');
     }
-    this.to = value;
+    this._to = value;
+  }
+
+  validateFromTo() {
+    return this._from <= this._to;
   }
 
   validate(incomingValue) {
@@ -129,38 +132,24 @@ class RangeValidator {
     ) {
       throw new TypeError('"incomingValue" - must be an integer number');
     }
-    if (
-      this.from <= this.to &&
-      incomingValue >= this.from &&
-      incomingValue <= this.to
-    ) {
-      return true;
-    } else if (incomingValue <= this.from && incomingValue >= this.to) {
-      return true;
-    }
-    return false;
+    return incomingValue >= this._from && incomingValue <= this._to;
   }
 }
 
 const myRangeValidator = new RangeValidator(15, 20);
-console.log(
-  "myRangeValidator.targetFromTo :>> ",
-  myRangeValidator.targetFromTo
-);
-
+console.log("myRangeValidator.targetFromTo :>> ", myRangeValidator.fromTo);
+console.log(myRangeValidator.from);
+console.log(myRangeValidator.to);
 try {
-  myRangeValidator.setFrom = 10;
-  myRangeValidator.setTo = 15;
+  myRangeValidator.from = 10;
+  myRangeValidator.to = 15;
 } catch (e) {
   if (e instanceof TypeError) {
     alert("Value must be an integer number");
   }
 }
 
-console.log(
-  "myRangeValidator.targetFromTo :>> ",
-  myRangeValidator.targetFromTo
-);
+console.log("myRangeValidator.targetFromTo :>> ", myRangeValidator.fromTo);
 
 try {
   console.log(
